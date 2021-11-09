@@ -1,58 +1,66 @@
-const chessBoard = document.querySelector(".board");
-let selectedDivs = [];
+const chessBoardDiv = document.querySelector(".board");
+const chessBoard = new ChessBoard(chessBoardDiv);
 
 
-const chessBoardArray = new ChessBoard();
-console.log(chessBoardArray.array);
-
-
-function renderBoard(chessBoard){
-    for(let i = 0; i < chessBoardArray.array.length; i++){
-        const boardRow = document.createElement("div");
-        boardRow.classList.add("board-row")
+// shows what spaces are available on visual board
+function showAvailableSpaces(selected, boardArray){
+    const availableSpaces = boardArray.selectedSpaces(selected.x, selected.y);
     
-        for(let j = 0; j < chessBoardArray.array[i].length; j++){
-            // Create board space div
-            const boardSpace = document.createElement("div");
-            boardSpace.classList.add("board-space");
-    
-            // Determine wether the space is black or white
-            i % 2 == 0 ?
-            j % 2 == 0 ? boardSpace.classList.add("black") : boardSpace.classList.add("white") : 
-            j % 2 == 0 ? boardSpace.classList.add("white") : boardSpace.classList.add("black")
-    
-            // Id the space
-            boardSpace.id = `${i}-${j}`;
-            boardSpace.innerText = `${chessBoardArray.array[i][j].type ? chessBoardArray.array[i][j].type : ""}`;
-            boardRow.appendChild(boardSpace);
-        }
-        chessBoard.appendChild(boardRow);
-    }
+
 }
 
-renderBoard(chessBoard);
-
-chessBoard.addEventListener("click", (evt) => {
-    
-    console.log(evt.target);
+chessBoardDiv.addEventListener("click", (evt) => {
     // id is ordered with y and then x
     // Use the spaces id ex. "3-4" to get the location of the selected piece or space
-    const selected = evt.target.id.split("-");
+    const coordinates = evt.target.id.split("-");
 
-    // Returns an array of possible places to put a piece
-    const availableSpaces = chessBoardArray.select(selected[1], selected[0]);
+    let {selected, spaces} = chessBoard.select(coordinates[1], coordinates[0]);
+    console.log(chessBoard);
+    // Check to move pieces
+    chessBoard.move();
+    
 
-    for(let div of selectedDivs){
-        div.classList.remove("selected");
-    }
+    // if a piece was previously selected
+    // if(selected == selectedPiece){
 
-    selectedDivs = []
+    // // Remove selected class on previous divs
+    //     for(let div of selectedDivs){
+    //         div.classList.remove("selected");
+    //     }
 
-    for(let space of availableSpaces){
-        const div = document.getElementById(`${space[0]}-${space[1]}`);
-        div.classList.add("selected");
-        selectedDivs.push(div);
-    }
+    // // Remove all selected divs
+    //     selectedDivs = []
+    
+    //     selectedPiece = undefined;
+    // }else{
+    //     selected = ChessBoard.select(coordinates[1], coordinates[0]);
 
-    console.log(selectedDivs);
+    // // Remove selected class on previous divs
+    //     for(let div of selectedDivs){
+    //         div.classList.remove("selected");
+    //     }
+
+    // // Remove all selected divs
+    //     selectedDivs = []
+
+    // // Returns an array of possible places to put a piece
+    //     const availableSpaces = ChessBoard.selectedSpaces(selected.x, selected.y);
+
+    //     console.log(availableSpaces);
+    //     console.log(coordinates)
+    //     // if(selectedPiece){
+    //     //     for(let space of availableSpaces){
+    //     //         if()
+    //     //     }
+    //     // }
+    // // Remember available spaces to move
+    //     for(let space of availableSpaces){
+    //         const div = document.getElementById(`${space[0]}-${space[1]}`);
+    //         div.classList.add("selected");
+    //         selectedDivs.push(div);
+    //     }
+
+    // // Remember last selected piece
+    //     if(selected) selectedPiece = selected;
+    // }
 })

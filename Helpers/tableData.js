@@ -15,6 +15,7 @@ const tableData = {
 
 // Returns a new piece class relating to the its id
 const idToClass = {
+    "0" : (x, y) => new EmptySpace(x, y),
     "1" :   (x, y, color, direction) => new Pawn(x, y, color, direction),
     "2" :   (x, y, color) => new Rook(x, y, color),
     "3" :   (x, y, color) => new Knight(x, y, color),

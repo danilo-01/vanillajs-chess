@@ -15,12 +15,19 @@ class Pawn {
         // y value for one space up
         const y = this.direction == "UP" ? this.y - 1 : this.y + 1;
 
+        console.log(y);
         // check 2 spaces up
         if(!boardArray[y][this.x] || boardArray[y][this.x].color != this.color){
             if(boardArray[y][this.x]) spaces.push([y, this.x]);
             if(this.moved == 0){
-                if(!boardArray[y + 1][this.x] || boardArray[y + 1][this.x].color != this.color){
-                    spaces.push([y + 1, this.x]);
+                if(this.direction == "UP"){
+                    if(!boardArray[y - 1][this.x] || boardArray[y - 1][this.x].color != this.color){
+                        spaces.push([y - 1, this.x]);
+                    }
+                }else{
+                    if(!boardArray[y + 1][this.x] || boardArray[y + 1][this.x].color != this.color){
+                        spaces.push([y + 1, this.x]);
+                    }
                 }
             }
         }
@@ -36,9 +43,6 @@ class Pawn {
             if(boardArray[y][x]) spaces.push([y, x]);
         }
 
-
-        
-
         return spaces;
     }
 
@@ -47,11 +51,11 @@ class Pawn {
         const targetSpace = boardArray[newY][newX];
 
         // If there is a piece occupying that space remove it
-        if(targetSpace !== true){
+        if(targetSpace.type == "EMTPYSPACE"){
             targetSpace.remove();
         }
 
-        boardArray[this.y][this.x] = true;
+        boardArray[this.y][this.x] = new EmptySpace(this.x, this.y);
         boardArray[newY][newX] = this;
         this.x = newX;
         this.y = newY;

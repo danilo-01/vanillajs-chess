@@ -1,0 +1,26 @@
+body {
+    background-color: blue;
+}
+.board {
+    width: 200px;
+    height: 200px;
+    border: 1px solid black;
+    color: blue;
+}
+
+.board-row {
+    height: 12.5%;
+    display: flex;
+}
+
+.board-space {
+    width: 12.5%;
+}
+
+.black{
+    background-color: black;
+}
+
+.white{
+    background-color: white;
+}

@@ -55,9 +55,19 @@ class ChessBoard {
         return;
         
     }
+
+    // Select piece at x and y of array
+    select(selectedX, selectedY){
+        const selectedPiece = this.array[selectedY][selectedX];
+
+        // Check if there was a selected piece
+        if(selectedPiece === true) return;
+
+        const availableSpaces = selectedPiece.availableSpaces(this.array);
+        console.log(selectedPiece);
+
+        return availableSpaces;
+    }
 }
 
-const x = new ChessBoard();
-console.log(x.array);
-x.mvoe(0,1,0,2)
-x.mvoe(1,1,1,3)
+

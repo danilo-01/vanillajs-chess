@@ -59,6 +59,7 @@ class Rook {
         this.moved = 0;
         this.x = x;
         this.y = y;
+        this.modifiers = [[0,1], [-0,-1], [-1,0], [1,-0]];
 
         const img = document.createElement("img");
         img.src = color == "BLACK" ? "https://upload.wikimedia.org/wikipedia/commons/a/a0/Chess_rdt60.png" : "https://upload.wikimedia.org/wikipedia/commons/5/5c/Chess_rlt60.png";
@@ -67,9 +68,7 @@ class Rook {
 
     // Returns an array of available spaces for this piece [[1,2], [2,3]]
     availableSpaces(boardArray) {
-        const spaces = [];
-
-        return spaces;
+        return checkWithModifiers(this.x, this.y, this.color, boardArray, this.modifiers);
     }
 }
 
@@ -80,6 +79,7 @@ class Knight {
         this.moved = 0;
         this.x = x;
         this.y = y;
+        this.modifiers = [[1, -2], [-1, -2], [1, 2], [-1, 2], [2, 1], [2, -1], [-2, -1], [-2, 1]]
 
         const img = document.createElement("img");
         img.src = color == "BLACK" ? "https://upload.wikimedia.org/wikipedia/commons/f/f1/Chess_ndt60.png" : "https://upload.wikimedia.org/wikipedia/commons/2/28/Chess_nlt60.png";
@@ -88,9 +88,7 @@ class Knight {
 
     // Returns an array of available spaces for this piece [[1,2], [2,3]]
     availableSpaces(boardArray) {
-        const spaces = [];
-
-        return spaces;
+        return checkOnceWithModifiers(this.x, this.y, this.color, boardArray, this.modifiers);
     }
 }
 
@@ -101,6 +99,7 @@ class Bishop {
         this.moved = 0;
         this.x = x;
         this.y = y;
+        this.modifiers = [[1,1], [-1,-1], [-1,1], [1,-1]];
 
         const img = document.createElement("img");
         img.src = color == "BLACK" ? "https://upload.wikimedia.org/wikipedia/commons/8/81/Chess_bdt60.png" : "https://upload.wikimedia.org/wikipedia/commons/9/9b/Chess_blt60.png";
@@ -109,9 +108,7 @@ class Bishop {
 
     // Returns an array of available spaces for this piece [[1,2], [2,3]]
     availableSpaces(boardArray) {
-        const spaces = [];
-
-        return spaces;
+        return checkWithModifiers(this.x, this.y, this.color, boardArray, this.modifiers);
     }
 }
 
@@ -143,6 +140,7 @@ class Queen {
         this.moved = 0;
         this.x = x;
         this.y = y;
+        this.modifiers = [[1,1], [-1,-1], [-1,1], [1,-1], [0,1], [-0,-1], [-1,0], [1,-0]]
 
         const img = document.createElement("img");
         img.src = color == "BLACK" ? "https://upload.wikimedia.org/wikipedia/commons/a/af/Chess_qdt60.png" : "https://upload.wikimedia.org/wikipedia/commons/4/49/Chess_qlt60.png";
@@ -151,8 +149,63 @@ class Queen {
 
     // Returns an array of available spaces for this piece [[1,2], [2,3]]
     availableSpaces(boardArray) {
-        const spaces = [];
-
-        return spaces;
+        return checkWithModifiers(this.x, this.y, this.color, boardArray, this.modifiers);
     }
+}
+
+function checkWithModifiers(x, y, color, boardArray, modifiers){
+    // x and y are the position of the peice's space that were refering to 
+    const spaces = [];
+    // Check spaces up right
+
+    for(let modifier of modifiers){
+        
+        // target x and y to be checked
+        let tarX = x + modifier[0];
+        let tarY = y + modifier[1];
+
+        // Loop until there isnt a valid space
+        while(boardArray[tarY] && boardArray[tarY][tarX]){
+
+            if(boardArray[tarY][tarX].type == "EMPTYSPACE"){
+                spaces.push([tarY, tarX]);
+            }else if(boardArray[tarY][tarX].color != color){
+                spaces.push([tarY, tarX]);
+                break;
+            }else{
+                break;
+            }
+
+            // Update target space using the modifiers
+            tarX = tarX + modifier[0];
+            tarY = tarY + modifier[1];
+        }
+    }
+
+    return spaces;
+}
+
+function checkOnceWithModifiers(x, y, color, boardArray, modifiers){
+    // x and y are the position of the peice's space that were refering to 
+    const spaces = [];
+    // Check spaces up right
+
+    for(let modifier of modifiers){
+        
+        // target x and y to be checked
+        let tarX = x + modifier[0];
+        let tarY = y + modifier[1];
+
+        // Loop until there isnt a valid space
+        console.log()
+        
+        if(!boardArray[tarY] || !boardArray[tarY][tarX]) continue;
+        console.log(boardArray[tarY][tarX]);
+        if(boardArray[tarY][tarX].type == "EMPTYSPACE" || boardArray[tarY][tarX].color != color){
+            spaces.push([tarY, tarX]);
+        }
+
+    }
+
+    return spaces;
 }

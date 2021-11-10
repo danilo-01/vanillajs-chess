@@ -138,11 +138,9 @@ class ChessBoard {
         const defeatedPieceImage = document.getElementById(`${this.currentSelection.y}-${this.currentSelection.x}`);
         if(defeatedPieceImage) {
             for(let child of defeatedPieceImage.children){
-                console.debug("child", child);
                 child.remove();
             }
         }
-        console.log(defeatedPieceImage, `${this.currentSelection.y}-${this.currentSelection.x}`);
 
         // Swap piece/space at current selected with piece/space of previously selected
         this.array[this.currentSelection.y][this.currentSelection.x] = this.previousSelection;

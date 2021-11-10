@@ -36,12 +36,13 @@ class ChessBoard {
             }
             
         }
-    
+
         return chessArray;
     }
 
     // Generate visual chessboard based off of the chess board's array
     renderBoard(chessBoardDiv){
+
         for(let i = 0; i < this.array.length; i++){
             const boardRow = document.createElement("div");
             boardRow.classList.add("board-row")
@@ -58,37 +59,24 @@ class ChessBoard {
         
                 // Id the space
                 boardSpace.id = `${i}-${j}`;
-                boardSpace.innerText = `${this.array[i][j].type ? this.array[i][j].type : ""}`;
+                
+                const img = document.createElement("img");
+                if(this.array[i][j].type != "EMPTYSPACE"){
+                    boardSpace.appendChild(this.array[i][j].img ? this.array[i][j].img : img);
+                }
+
                 boardRow.appendChild(boardSpace);
+                
+                this.array[i][j].div = boardSpace;
             }
             chessBoardDiv.appendChild(boardRow);
         }
     }
 
-    // Move piece at x and y of array
-    // move(){
-
-    //     // Check if there was a selected piece
-    //     if(this.currentSelection.type == "EMPTYSPACE") return;
-
-    //     // If there was a piece check what spaces it can move to
-    //     const availableSpaces = selectedPiece.availableSpaces(this.array);
-
-    //     // Check if the target space matches any available spaces
-    //     for(let space of availableSpaces){
-    //         if(targetSpace.y == space[0] && targetSpace.x == space[1]){
-    //             selectedPiece.move(this.array, targetSpace.x, targetSpace.y);
-    //             return true;
-    //         }
-    //     }
-
-    //     return false;
-        
-    // }
-
-    // Select a piece and updated the previous selection adn visual chessboard
+    // Select a piece and updat the previous selection and visual chessboard
     select(selectedX, selectedY){
-        const selected = this.array[selectedY][selectedX] != true ? this.array[selectedY][selectedX] : undefined;
+        
+        const selected = this.array[selectedY][selectedX];
 
         // Update previous selection
         this.previousSelection = this.currentSelection;
@@ -99,10 +87,21 @@ class ChessBoard {
         // Possible spaces to move
         const spaces = selected.type != "EMPTYSPACE" ? selected.availableSpaces(this.array) : [];
 
+        // Possible spaces to move
+        const choices = this.previousSelection && this.previousSelection.type != "EMPTYSPACE" ? this.previousSelection.availableSpaces(this.array) : [];
+
+
+        for(let choice of choices){
+            if(choice[0] == this.currentSelection.y && choice[1] == this.currentSelection.x){
+                this.move();
+                return;
+            }
+        }
+
         // Update the visual chess board
         this.updateDivChoices(spaces);
 
-        return {selected, spaces,}
+        return;
     }
 
     updateDivChoices(choices){
@@ -123,30 +122,47 @@ class ChessBoard {
 
     // Move piece if the current selected piece is in the previous selected pieces available spaces
     move(){
-        // Possible spaces to move
-        const choices = this.previousSelection && this.previousSelection.type != "EMPTYSPACE" ? this.previousSelection.availableSpaces(this.array) : [];
+        // Clean up visual board choices
+        // Previous spaces
+        if(!this.previousSelection || this.previousSelection.type == "EMPTYSPACE") return;
+        const previousChoices = this.previousSelection.type != "EMPTYSPACE" ? this.previousSelection.availableSpaces(this.array) : [];
 
-        for(let choice of choices){
-            if(choice[0] == this.currentSelection.y && choice[1] == this.currentSelection.x){
-                console.log("working");
+        for(let choice of previousChoices){
+            const div = document.getElementById(`${choice[0]}-${choice[1]}`);
+            div.classList.remove("selected");
+        }
+        // Remember old x and y position
+        const [oldX, oldY, oldDiv] = [this.previousSelection.x, this.previousSelection.y, this.previousSelection.div];
+
+
+        const defeatedPieceImage = document.getElementById(`${this.currentSelection.y}-${this.currentSelection.x}`);
+        if(defeatedPieceImage) {
+            for(let child of defeatedPieceImage.children){
+                console.debug("child", child);
+                child.remove();
             }
         }
+        console.log(defeatedPieceImage, `${this.currentSelection.y}-${this.currentSelection.x}`);
 
-        this.updatePiece();
+        // Swap piece/space at current selected with piece/space of previously selected
+        this.array[this.currentSelection.y][this.currentSelection.x] = this.previousSelection;
+        this.previousSelection.x = this.currentSelection.x;
+        this.previousSelection.y = this.currentSelection.y;
+        const pieceImage = document.getElementById(`${oldY}-${oldX}`).children[0];
+        
+        
+        this.previousSelection.div = this.currentSelection.div;
+        this.previousSelection.div.appendChild(pieceImage);
+        // Fill empty space with a new empty space class
+        const replacementSpace = new EmptySpace(oldX, oldY)
+        this.array[oldY][oldX] = replacementSpace;
+        this.array[oldY][oldX].div = oldDiv;
+        
+        
+
+        // Increment times moved
+        this.previousSelection.moved++;
     }
-
-    updatePiece(){
-        // Move previous selection to current selection on array and replace previous selection with and EmptySpace class
-        const [oldX, oldY] = [this.previousSelection.x, this.previousSelection.y]
-
-        console.log(oldX, oldY);
-
-        // this.array[this.currentSelection.y][this.currentSelection.x] = this.previousSelection;
-        // this.array[this.previousSelection.y][this.previousSelection.x] = new EmptySpace(this.previousSelection.y, this.previousSelection.x);
-
-
-    }
-
 }
 
 class EmptySpace {
@@ -154,6 +170,8 @@ class EmptySpace {
         this.x = x;
         this.y = y;
         this.type = "EMPTYSPACE"
+        this.div = document.getElementById(`${this.y}-${this.x}`);
+        this.src = "";
     }
 }
 

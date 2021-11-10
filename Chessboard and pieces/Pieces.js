@@ -1,11 +1,16 @@
 class Pawn {
-    constructor(x, y, color, direction) {
+    constructor(x, y, color, direction,) {
         this.color = color;
         this.type = "PAWN";
         this.moved = 0;
         this.x = x;
         this.y = y;
+        this.div;
         this.direction = color == "BLACK" ? "DOWN" : "UP";
+
+        const img = document.createElement("img");
+        img.src = color == "BLACK" ? "https://upload.wikimedia.org/wikipedia/commons/c/cd/Chess_pdt60.png" : "https://upload.wikimedia.org/wikipedia/commons/0/04/Chess_plt60.png";
+        this.img = img;
     }
 
     // Returns an array of available spaces for this piece [[1,2], [2,3]]
@@ -15,7 +20,6 @@ class Pawn {
         // y value for one space up
         const y = this.direction == "UP" ? this.y - 1 : this.y + 1;
 
-        console.log(y);
         // check 2 spaces up
         if(!boardArray[y][this.x] || boardArray[y][this.x].color != this.color){
             if(boardArray[y][this.x]) spaces.push([y, this.x]);
@@ -46,20 +50,6 @@ class Pawn {
         return spaces;
     }
 
-    // Moves piece to a new arrea on array
-    move(boardArray, newX, newY){
-        const targetSpace = boardArray[newY][newX];
-
-        // If there is a piece occupying that space remove it
-        if(targetSpace.type == "EMTPYSPACE"){
-            targetSpace.remove();
-        }
-
-        boardArray[this.y][this.x] = new EmptySpace(this.x, this.y);
-        boardArray[newY][newX] = this;
-        this.x = newX;
-        this.y = newY;
-    }
 }
 
 class Rook {
@@ -69,6 +59,10 @@ class Rook {
         this.moved = 0;
         this.x = x;
         this.y = y;
+
+        const img = document.createElement("img");
+        img.src = color == "BLACK" ? "https://upload.wikimedia.org/wikipedia/commons/a/a0/Chess_rdt60.png" : "https://upload.wikimedia.org/wikipedia/commons/5/5c/Chess_rlt60.png";
+        this.img = img;
     }
 
     // Returns an array of available spaces for this piece [[1,2], [2,3]]
@@ -86,6 +80,10 @@ class Knight {
         this.moved = 0;
         this.x = x;
         this.y = y;
+
+        const img = document.createElement("img");
+        img.src = color == "BLACK" ? "https://upload.wikimedia.org/wikipedia/commons/f/f1/Chess_ndt60.png" : "https://upload.wikimedia.org/wikipedia/commons/2/28/Chess_nlt60.png";
+        this.img = img;
     }
 
     // Returns an array of available spaces for this piece [[1,2], [2,3]]
@@ -103,6 +101,10 @@ class Bishop {
         this.moved = 0;
         this.x = x;
         this.y = y;
+
+        const img = document.createElement("img");
+        img.src = color == "BLACK" ? "https://upload.wikimedia.org/wikipedia/commons/8/81/Chess_bdt60.png" : "https://upload.wikimedia.org/wikipedia/commons/9/9b/Chess_blt60.png";
+        this.img = img;
     }
 
     // Returns an array of available spaces for this piece [[1,2], [2,3]]
@@ -120,6 +122,10 @@ class King {
         this.moved = 0;
         this.x = x;
         this.y = y;
+
+        const img = document.createElement("img");
+        img.src = color == "BLACK" ? "https://upload.wikimedia.org/wikipedia/commons/e/e3/Chess_kdt60.png" : "https://upload.wikimedia.org/wikipedia/commons/3/3b/Chess_klt60.png";
+        this.img = img;
     }
 
     // Returns an array of available spaces for this piece [[1,2], [2,3]]
@@ -137,6 +143,10 @@ class Queen {
         this.moved = 0;
         this.x = x;
         this.y = y;
+
+        const img = document.createElement("img");
+        img.src = color == "BLACK" ? "https://upload.wikimedia.org/wikipedia/commons/a/af/Chess_qdt60.png" : "https://upload.wikimedia.org/wikipedia/commons/4/49/Chess_qlt60.png";
+        this.img = img;
     }
 
     // Returns an array of available spaces for this piece [[1,2], [2,3]]

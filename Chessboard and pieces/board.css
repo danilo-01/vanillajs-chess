@@ -1,16 +1,22 @@
 body {
     background-color: blue;
 }
+.board-wrapper{
+    display: flex;
+    justify-content: space-around;
+
+}
+
 .board {
     width: 200px;
     height: 200px;
-    border: 1px solid black;
-    color: blue;
+    box-shadow: 5px 5px #171717;
 }
 
 .board-row {
     height: 12.5%;
     display: flex;
+
 }
 
 .board-space {
@@ -22,18 +28,19 @@ body {
     width: 100%;
     height: 100%;
     cursor: pointer;
+    transition: all 5s;
 }
 
 .black{
-    background-color: rgba(0, 0, 0, 0.473);
+    background-color: #BB8D6F;
 }
 
 .white{
-    background-color: white;
+    background-color: #FDFBF9;
 }
 
 .selected {
     cursor: pointer;
-    
-    background-color: red;
+    background-color: #6577B3;
+    transition: background-color 0.15s;
 }

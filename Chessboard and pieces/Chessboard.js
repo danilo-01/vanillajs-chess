@@ -4,9 +4,10 @@ class ChessBoard {
         this.array = this.generateBoard();
         this.previousSelection = undefined;
         this.currentSelection = undefined;
+        this.turn = "WHITE";
 
         this.renderBoard(this.div);
-        // TODO add point counter
+        // TODO add checkmate feature
     }
 
     // Generates chess board array
@@ -42,7 +43,6 @@ class ChessBoard {
 
     // Generate visual chessboard based off of the chess board's array
     renderBoard(chessBoardDiv){
-
         for(let i = 0; i < this.array.length; i++){
             const boardRow = document.createElement("div");
             boardRow.classList.add("board-row")
@@ -75,46 +75,78 @@ class ChessBoard {
 
     // Select a piece and updat the previous selection and visual chessboard
     select(selectedX, selectedY){
-        
-        const selected = this.array[selectedY][selectedX];
-
         // Update previous selection
         this.previousSelection = this.currentSelection;
 
         // Remember current selection
-        this.currentSelection = selected;
+        this.currentSelection = this.array[selectedY][selectedX];
 
-        // Possible spaces to move
-        const spaces = selected.type != "EMPTYSPACE" ? selected.availableSpaces(this.array) : [];
+        // Check if the previous selection is allowed to make a move
+        if(this.previousSelection && this.previousSelection.color == this.turn){
 
-        // Possible spaces to move
-        const choices = this.previousSelection && this.previousSelection.type != "EMPTYSPACE" ? this.previousSelection.availableSpaces(this.array) : [];
+            // Get available spaces for the previously selected spaces
+            const availableSpaces =  this.previousSelection.availableSpaces(this.array);
 
+            // Loops over the available spaces to check if there is a match with the current selected space
+            for(let space of availableSpaces){
 
-        for(let choice of choices){
-            if(choice[0] == this.currentSelection.y && choice[1] == this.currentSelection.x){
-                this.move();
-                return;
+                // If the x and y coordinates of the previous selected space matches the current selected space
+                if(space[0] == this.currentSelection.y && space[1] == this.currentSelection.x){
+
+                    // If the previous pieces color is not this.turns color then dont do anything
+                    if(this.previousSelection.color != this.turn) return;
+
+                    // Update the turn to be the opposite of whatever it currently is
+                    this.turn = this.turn == "WHITE" ? "BLACK" : "WHITE";
+
+                    // Update visual boards turn
+                    chessBoardTurn.textContent = `${this.turn}'s turn.`;
+
+                    // Move piece
+                    this.move();
+
+                    return;
+                }
             }
         }
 
-        // Update the visual chess board
-        this.updateDivChoices(spaces);
+        // If the current selected piece is not allowed to move 
+        if(this.currentSelection.color != this.turn){
 
-        return;
+            // Clear all divs with a "selected" class
+            this.updateVisualSpaces([]);
+
+            return;
+        }
+
+        // Check if the current selection allowed to make a selection
+        if(this.currentSelection.color == this.turn ) {
+
+            // Possible spaces to move
+            const availableSpaces = this.currentSelection.type != "EMPTYSPACE" ? this.currentSelection.availableSpaces(this.array) : [];
+
+            // Update the visual chess board
+            this.updateVisualSpaces(availableSpaces);
+            return;
+        }
     }
 
-    updateDivChoices(choices){
-        if(this.previousSelection){
-        // Previous spaces
-            const previousChoices = this.previousSelection.type != "EMPTYSPACE" ? this.previousSelection.availableSpaces(this.array) : [];
+    // Updates the divs have/not have a "selected" class 
+    updateVisualSpaces (currentChoices){
+        // If there was a previously selected piece
+        if(this.previousSelection && this.previousSelection.type != "EMPTYSPACE"){
 
+            // Gets an array of all previous choices
+            const previousChoices =  this.previousSelection.availableSpaces(this.array);
+            
             for(let choice of previousChoices){
+                // Get the div that has an id of the x y coordinates and remove the selected class
                 const div = document.getElementById(`${choice[0]}-${choice[1]}`);
                 div.classList.remove("selected");
             }
         }
-        for(let choice of choices){
+        // Get the div associated with each current choice and add a "selected" class to it
+        for(let choice of currentChoices){
             const div = document.getElementById(`${choice[0]}-${choice[1]}`);
             div.classList.add("selected");
         }
@@ -158,7 +190,8 @@ class ChessBoard {
         
         
 
-        // Increment times moved
+        // Increment times moved and if its a pawn make sure to mark that its been moved
+        this.previousSelection.type == "PAWN" && this.previousSelection.moved == 0 ? this.previousSelection.modifiers.pop() : undefined;
         this.previousSelection.moved++;
     }
 }

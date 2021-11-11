@@ -1,6 +1,11 @@
 const chessBoardDiv = document.querySelector(".board");
+const chessBoardTurn = document.querySelector(".board-info-turn");
+
+// Initialize chessboard
 const chessBoard = new ChessBoard(chessBoardDiv);
 
+// Display starting turn
+chessBoardTurn.textContent = `${chessBoard.turn}'s turn.`;
 
 chessBoardDiv.addEventListener("click", (evt) => {
     // id is ordered with y and then x

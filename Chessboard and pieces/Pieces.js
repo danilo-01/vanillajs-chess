@@ -26,13 +26,13 @@ class Pawn {
 
         // Check 1 up
         newY = this.y + direction
-        console.log(newY);
+
         if(boardArray[newY] && boardArray[newY][this.x].type == "EMPTYSPACE") spaces.push([newY, this.x]);
 
         // Check 2 up
         if(this.moved == 0 && spaces.length == 1){
             newY = this.y + direction + direction;
-            console.log(newY);
+
             if(boardArray[newY] && boardArray[newY][this.x].type == "EMPTYSPACE") spaces.push([newY, this.x]);
         }
 
